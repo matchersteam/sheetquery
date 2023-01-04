@@ -1,4 +1,3 @@
-import Sheet from 'gasmask/src/SpreadsheetApp/Sheet';
 export type { Spreadsheet, Sheet } from 'gasmask/src/SpreadsheetApp';
 /**
  * Run new sheet query
@@ -53,7 +52,7 @@ export declare class SheetQueryBuilder {
      *
      * @return {Sheet}
      */
-    getSheet(): Sheet;
+    getSheet(): any;
     /**
      * Get values in sheet from current query + where condition
      */

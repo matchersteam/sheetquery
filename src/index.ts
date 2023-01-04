@@ -1,4 +1,3 @@
-import Sheet from 'gasmask/src/SpreadsheetApp/Sheet';
 export type { Spreadsheet, Sheet } from 'gasmask/src/SpreadsheetApp';
 
 /**
@@ -77,7 +76,7 @@ export class SheetQueryBuilder {
    *
    * @return {Sheet}
    */
-  getSheet(): Sheet {
+  getSheet(): any {
     if (!this.sheetName) {
       throw new Error('SheetQuery: No sheet selected. Select sheet with .from(sheetName) method');
     }
