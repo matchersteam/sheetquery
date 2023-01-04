@@ -1,6 +1,6 @@
 {
   "name": "sheetquery",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Query Builder/ORM for Google Sheets",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -23,6 +23,9 @@
     "orm"
   ],
   "author": "Vance Lucas <vance@vancelucas.com>",
+  "contributors": [
+    "Matchers - tech@matchers.fr"
+  ],
   "license": "BSD-3-Clause",
   "homepage": "https://github.com/matchersteam/sheetquery",
   "devDependencies": {

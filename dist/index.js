@@ -19,7 +19,7 @@ class SheetQueryBuilder {
         this.columnNames = [];
         this.headingRow = 1;
         this._sheetHeadings = [];
-        this.activeSpreadsheet = activeSpreadsheet;
+        this.activeSpreadsheet = activeSpreadsheet || SpreadsheetApp.getActiveSpreadsheet();
     }
     select(columnNames) {
         this.columnNames = Array.isArray(columnNames) ? columnNames : [columnNames];

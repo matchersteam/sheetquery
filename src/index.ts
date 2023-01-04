@@ -36,7 +36,7 @@ export class SheetQueryBuilder {
   _sheetHeadings: string[] = [];
 
   constructor(activeSpreadsheet: any) {
-    this.activeSpreadsheet = activeSpreadsheet;
+    this.activeSpreadsheet = activeSpreadsheet || SpreadsheetApp.getActiveSpreadsheet();
   }
 
   select(columnNames: string | string[]): SheetQueryBuilder {
