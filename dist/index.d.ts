@@ -1,3 +1,4 @@
+import Sheet from 'gasmask/src/SpreadsheetApp/Sheet';
 export type { Spreadsheet, Sheet } from 'gasmask/src/SpreadsheetApp';
 /**
  * Run new sheet query
@@ -30,7 +31,7 @@ export declare class SheetQueryBuilder {
     _sheet: any;
     _sheetValues: any;
     _sheetHeadings: string[];
-    constructor(activeSpreadsheet?: any);
+    constructor(activeSpreadsheet: any);
     select(columnNames: string | string[]): SheetQueryBuilder;
     /**
      * Name of spreadsheet to perform operations on
@@ -52,7 +53,7 @@ export declare class SheetQueryBuilder {
      *
      * @return {Sheet}
      */
-    getSheet(): any;
+    getSheet(): Sheet;
     /**
      * Get values in sheet from current query + where condition
      */
@@ -74,13 +75,6 @@ export declare class SheetQueryBuilder {
      * @returns {any[]}
      */
     getCells(): any[];
-    /**
-     * Get cells in sheet from current query + where condition and from specific header
-     * @param {string} key name of the column
-     * @param {Array<string>} [keys] optionnal names of columns use to select more columns than one
-     * @returns {any[]} all the colum cells from the query's rows
-     */
-    getCellsWithHeadings(key: string, headings: Array<string>): any[];
     /**
      * Insert new rows into the spreadsheet
      * Arrays of objects like { Heading: Value }
@@ -112,4 +106,5 @@ export declare class SheetQueryBuilder {
      * @return {SheetQueryBuilder}
      */
     clearCache(): SheetQueryBuilder;
+    getUrls(): any[];
 }

@@ -1,4 +1,4 @@
-import type { Spreadsheet, Sheet } from 'gasmask/src/SpreadsheetApp';
+import Sheet from 'gasmask/src/SpreadsheetApp/Sheet';
 export type { Spreadsheet, Sheet } from 'gasmask/src/SpreadsheetApp';
 
 /**
@@ -7,7 +7,7 @@ export type { Spreadsheet, Sheet } from 'gasmask/src/SpreadsheetApp';
  * @param {Spreadsheet} activeSpreadsheet Specific spreadsheet to use, or will use SpreadsheetApp.getActiveSpreadsheet() if undefined\
  * @return {SheetQueryBuilder}
  */
-export function sheetQuery(activeSpreadsheet?: any) {
+export function sheetQuery(activeSpreadsheet?: any): SheetQueryBuilder {
   return new SheetQueryBuilder(activeSpreadsheet);
 }
 
@@ -36,8 +36,8 @@ export class SheetQueryBuilder {
   _sheetValues: any;
   _sheetHeadings: string[] = [];
 
-  constructor(activeSpreadsheet?: any) {
-    this.activeSpreadsheet = activeSpreadsheet || SpreadsheetApp.getActiveSpreadsheet();
+  constructor(activeSpreadsheet: any) {
+    this.activeSpreadsheet = activeSpreadsheet;
   }
 
   select(columnNames: string | string[]): SheetQueryBuilder {
@@ -77,7 +77,7 @@ export class SheetQueryBuilder {
    *
    * @return {Sheet}
    */
-  getSheet() {
+  getSheet(): Sheet {
     if (!this.sheetName) {
       throw new Error('SheetQuery: No sheet selected. Select sheet with .from(sheetName) method');
     }
@@ -158,44 +158,16 @@ export class SheetQueryBuilder {
    */
   getCells(): any[] {
     const rows = this.getRows();
-    const cellArray: Array<any> = [];
+    const cells: any[] = [];
     rows.forEach((row) => {
-      cellArray.push(this._sheet.getRange(row.__meta.row, 1, 1, row.__meta.cols));
-    });
-
-    return cellArray;
-  }
-
-  /**
-   * Get cells in sheet from current query + where condition and from specific header
-   * @param {string} key name of the column
-   * @param {Array<string>} [keys] optionnal names of columns use to select more columns than one
-   * @returns {any[]} all the colum cells from the query's rows
-   */
-  getCellsWithHeadings(key: string, headings: Array<string>): any[] {
-    let rows = this.getRows();
-    let indexColumn = 1;
-    const arrayCells: Array<any> = [];
-    for (const elem of this._sheetHeadings) {
-      if (elem == key) break;
-      indexColumn++;
-    }
-    rows.forEach((row) => {
-      arrayCells.push(this._sheet.getRange(row.__meta.row, indexColumn));
-    });
-
-    //If we got more thant one param
-    headings.forEach((col) => {
-      let indexColumn = 1;
-      for (const elem of this._sheetHeadings) {
-        if (elem == col) break;
-        indexColumn++;
+      const cell: any = {}
+      for (let i = 0; i < this._sheetHeadings.length; i++) {
+        const heading = this._sheetHeadings[i];
+        cell[heading] = this._sheet.getRange(row.__meta.row, i + 1, 1, 1);
       }
-      rows.forEach((row) => {
-        arrayCells.push(this._sheet.getRange(row.__meta.row, indexColumn));
-      });
+      cells.push(cell);
     });
-    return arrayCells;
+    return cells;
   }
 
   /**
@@ -302,5 +274,20 @@ export class SheetQueryBuilder {
     SpreadsheetApp.flush();
 
     return this;
+  }
+
+  getUrls() {
+    const rows = this.getRows();
+    const urls: any[] = [];
+    rows.forEach((row) => {
+      const url: any = {}
+      for (let i = 0; i < this._sheetHeadings.length; i++) {
+        const heading = this._sheetHeadings[i];
+        const cellRichTextValue = this._sheet.getRange(row.__meta.row, i + 1, 1, 1).getRichTextValue();
+        if (cellRichTextValue) url[heading] = cellRichTextValue.getLinkUrl();
+      }
+      urls.push(url);
+    });
+    return urls;
   }
 }
