@@ -186,6 +186,8 @@ class SheetQueryBuilder {
         const updatedRow = updateFn(row) || row;
         const rowMeta = updatedRow.__meta;
         const headings = this.getHeadings();
+        const nbCol = row.__meta.cols;
+        const numRow = row.__meta.row;
         delete updatedRow.__meta;
         // Put new array data in order of headings in sheet
         const arrayValues = headings.map((heading) => {
@@ -195,12 +197,33 @@ class SheetQueryBuilder {
         });
         const maxCols = Math.max(rowMeta.cols, arrayValues.length);
         const updateRowRange = this.getSheet().getRange(rowMeta.row, 1, 1, maxCols);
+        const richTextValues = updateRowRange.getRichTextValues();
         const rangeData = updateRowRange.getValues()[0] || [];
         // Map over old data in same index order to update it and ensure array length always matches
         const newValues = rangeData.map((value, index) => {
             return arrayValues[index] || value;
         });
+        /* Update arrayValues to add formulas */
+        for (let i = 1; i < nbCol + 1; i++) {
+            const range = this._sheet.getRange(numRow, i, 1, 1);
+            const formula = range.getFormula();
+            if (formula != '') {
+                newValues[i - 1] = formula;
+            }
+        }
         updateRowRange.setValues([newValues]);
+        /* fix to preserve RichTextValues */
+        for (let i = 1; i < nbCol + 1; i++) {
+            const richTextValue = richTextValues[0][i - 1];
+            if (richTextValue.getLinkUrl() != null) {
+                const newRichTextValue = SpreadsheetApp.newRichTextValue()
+                    .setText(newValues[i - 1])
+                    .setLinkUrl(richTextValue.getLinkUrl())
+                    .build();
+                const range = this._sheet.getRange(numRow, i, 1, 1);
+                range.setRichTextValue(newRichTextValue);
+            }
+        }
         return this;
     }
     /**
